@@ -48,3 +48,28 @@ plt.xticks(rotation=45)
 plt.grid(axis='y')
 plt.tight_layout()
 plt.show()
+
+e_price_vs_volume = chunk.groupby('e_price')['volume'].mean().reset_index()
+
+plt.figure(figsize =(10,5))
+plt.bar(e_price_vs_volume['e_price'],e_price_vs_volume['volume'],color = 'Green')
+plt.title("e_Price VS Volume")
+plt.xlabel("Price")
+plt.ylabel("Volume")
+plt.xticks(range(0,3))
+plt.grid(axis='y')
+plt.tight_layout()
+plt.show()
+
+s_price_vs_volume = chunk.groupby('e_price')['volume'].mean().reset_index()
+
+plt.figure(figsize =(10,5))
+sns.barplot(data = s_price_vs_volume,x='e_price',y = 'volume',palette= 'Oranges')
+plt.title("s_Price VS Volume")
+plt.xlabel("Price")
+plt.ylabel("Volume")
+plt.xticks(range(0,3))
+plt.grid(axis='y')
+plt.tight_layout()
+plt.show()
+
