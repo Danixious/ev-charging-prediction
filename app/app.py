@@ -1,0 +1,78 @@
+import pandas as pd
+import joblib
+import numpy
+import streamlit as st
+
+model,feature_order = joblib.load("D:/EV_prediction/ev-charging-prediction/models/RandomForsetRegressorModel.joblib")
+st.set_page_config(page_title = "Predict the charging volume based on station conditions and time",layout = "centered")
+st.title("⚡EV Charging Demand Prediction")
+
+
+mode = st.sidebar.radio("Select Prediction Mode",["Single Input","batch Upload"])
+
+def preprocess(df):
+    weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    df['weekday'] = pd.Categorical(df['weekday'], categories=weekdays)
+   
+    if 's_price' in df.columns and 'e_price' in df.columns:
+        df['avg_price'] = (df['s_price'] + df['e_price']) / 2
+    
+    df = pd.get_dummies(df, columns=['weekday'], drop_first=False)
+    # Drop e_price, s_price, time if present
+    df = df.drop(columns=[col for col in ['e_price', 's_price', 'time'] if col in df.columns], errors='ignore')
+    
+    return df
+
+if mode == "Single Input":
+    st.subheader("🔍Predict for a Single Time Slot")
+
+    busy = st.number_input("Busy Chargers",min_value = 0.0)
+    idle = st.number_input("Idle Chargers", min_value=0.0)
+    fast_busy = st.number_input("Fast Chargers Busy", min_value=0.0)
+    slow_busy = st.number_input("Slow Chargers Busy", min_value=0.0)
+    duration = st.number_input("Charging Duration (hours)", min_value=0.0)
+    weekday = st.selectbox("Weekday", ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
+    is_weekend = st.selectbox("Is Weekend", [0, 1])
+    hour = st.slider("Hour of Day", 0, 23)
+    month = st.slider("Month", 1, 12)
+    s_price = st.number_input("Starting Price", min_value=0.0)
+    e_price = st.number_input("Ending Price", min_value=0.0)
+
+    if st.button("Predict"):
+        input_df = pd.DataFrame({
+            'busy': [busy],
+            'idle': [idle],
+            'fast_busy': [fast_busy],
+            'slow_busy': [slow_busy],
+            'duration': [duration],
+            'is_weekend': [is_weekend],
+            'hour': [hour],
+            'month': [month],
+            'weekday': [weekday],
+            's_price': [s_price],
+            'e_price': [e_price]
+        })
+
+        processed = preprocess(input_df)
+        processed = processed.reindex(columns = feature_order,fill_value=0)
+        prediction = model.predict(processed)
+        st.success(f"🔋 Predicted Charging Volume: {prediction[0]:.2f} kWh")
+
+elif mode == "Batch Upload":
+    st.subheader("📂 Predict from CSV Upload")
+
+    uploaded_file = st.file_uploader("Upload a CSV file with data", type=['csv'])
+
+    if uploaded_file is not None:
+        df = pd.read_csv(uploaded_file)
+        st.write("✅ Uploaded Data Preview:", df.head())
+
+        processed = preprocess(df)
+        processed = processed.reindex(columns = feature_order,fill_value=0)
+        predictions = model.predict(processed)
+
+        df['Predicted Volume'] = predictions
+        st.write("🔋 Predictions", df.head())
+
+        csv = df.to_csv(index=False).encode('utf-8')
+        st.download_button("Download Predictions as CSV", data=csv, file_name="predictions.csv", mime='text/csv')
