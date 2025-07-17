@@ -6,6 +6,8 @@
 
 ## Live Demo
 - 👉 [EV Charging Demand Prediction Web App](https://ev-charging-prediction-ksm5ddtn7b2kl9wy3aehw3.streamlit.app/)
+
+---
 ## 📊 Project Overview
 -  🎯 **Goal:** Forecast charging volume (in kWh) based on temporal and contextual features.
 
