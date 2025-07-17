@@ -1,23 +1,36 @@
-⚡ EV Charging Demand Prediction
-Predicting future EV charging demand using Machine Learning to optimize resource planning and grid efficiency. This project leverages a Random Forest model trained on historical EV charging data, delivering high accuracy and practical insights for infrastructure scaling and energy distribution.
+# ⚡ EV Charging Demand Prediction
+>Predict future EV charging demand using Machine Learning to optimize grid efficiency and infrastructure planning.  
+> 🧠 Powered by a Random Forest model trained on real usage data.
 
-📊 Project Overview
-Goal: Forecast charging volume (in kWh) based on temporal and contextual features.
+---
 
-Dataset: EV charging station usage logs including time, weekday, pricing, and volume.
+## 📊 Project Overview
+-  🎯 **Goal:** Forecast charging volume (in kWh) based on temporal and contextual features.
 
-Tech Stack: Python, Pandas, Scikit-learn, Matplotlib, XGBoost, Streamlit
+- 🗂 **Dataset:** EV charging station usage logs including time, weekday, pricing, and volume.
 
-🚀 Features
-📈 Real-time prediction: Input data via Streamlit UI for immediate results.
+- 🧰 **Tech Stack:**
+  ![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+  ![Pandas](https://img.shields.io/badge/Pandas-150458?style=flat&logo=pandas&logoColor=white)
+  ![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-F7931E?style=flat&logo=scikit-learn&logoColor=white)
+  ![XGBoost](https://img.shields.io/badge/XGBoost-EC6C00?style=flat)
+  ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)
 
-🧾 Batch inference: Upload CSV files and get predictions for all records.
+---
 
-🔍 Exploratory Data Analysis: Understand charging patterns by day, hour, and price range.
+## 🚀 Features
+- 📈 **Real-Time Prediction:** Input data through the Streamlit UI  
 
-📦 Deployed via Streamlit for interactive usage.
+- 🧾 **Batch Inference:** Upload CSVs for multi-record predictions  
 
-📌 Visual Insights
+- 🔍 **EDA:** Explore demand patterns by day, hour, and pricing  
+
+- 💻 **Streamlit App:** Deployed for interactive user experience  
+
+---
+
+## 📌 Visual Insights
+
 🔹 Average Charging Volume by Weekday
 
 <img src="https://github.com/Danixious/ev-charging-prediction/blob/main/outputs/AVGChargingVolumebyweekday.png" width="600"/>
@@ -28,8 +41,9 @@ Tech Stack: Python, Pandas, Scikit-learn, Matplotlib, XGBoost, Streamlit
 
 <img src="https://github.com/Danixious/ev-charging-prediction/blob/main/outputs/PriceVSVolume.png" width="600"/>
 
+---
 
-🧠 Model Performance
+## 🧠 Model Performance
 | Model             | MSE         | MAE      | R² Score   | Cross Validation Scores                        |
 |------------------|-------------|----------|------------|------------------------------------------------|
 | Linear Regression| 0.0120      | 0.0788   | 0.9880     | –                                              |
@@ -37,24 +51,26 @@ Tech Stack: Python, Pandas, Scikit-learn, Matplotlib, XGBoost, Streamlit
 | XGBoost          | 5.20×10⁻⁶   | 0.00075  | 0.999995   | [-0.54, 0.97, 0.99, -10.46, -2.20] <br>**Mean**: -2.25 |
 
 
-✅ Best Model Chosen: Random Forest Regressor due to its highest accuracy and robust CV score.
+✅ **Best Model Chosen:** Random Forest Regressor due to its highest accuracy and robust CV score.
 
+---
 
-🖥️ App Preview
+## 🖥️ App Preview
 
 <img src="https://github.com/Danixious/ev-charging-prediction/blob/main/outputs/AppPreview.png" width="700"/>
 
-🧪 How to Run
-Clone the repo:
+---
 
+## 🧪 How to Run
+
+# Clone the repo:
 git clone https://github.com/Danixious/ev-charging-prediction.git
 cd ev-charging-prediction
 
-Install dependencies:
-
+# Install dependencies:
 pip install -r requirements.txt
-Run Streamlit App:
 
+# Run Streamlit App:
 streamlit run app.py
 
 
