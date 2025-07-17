@@ -5,7 +5,6 @@ import streamlit as st
 import altair as alt
 
 model,feature_order = joblib.load("models/RandomForsetRegressorModel.joblib")
-df = df[['day_of_week', 'hour_of_day', 'price_per_kWh']]
 st.set_page_config(page_title = "Predict the charging volume based on station conditions and time",layout = "centered")
 st.title("⚡EV Charging Demand Prediction")
 
@@ -13,19 +12,20 @@ st.title("⚡EV Charging Demand Prediction")
 mode = st.sidebar.radio("Select Prediction Mode",["Single Input","Batch Upload"])
 
 def preprocess(df):
-    if 'weekday' not in df.columns and 'day_of_week' in df.columns:
-        weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-        df['weekday'] = df['day_of_week'].apply(lambda x: weekdays[int(x)] if 0 <= int(x) <= 6 else 'Unknown')
-    else:
-        weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
-        
+    weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+    if 'weekday' not in df.columns:
+        if 'day_of_week' in df.columns:
+           df['weekday'] = df['day_of_week'].apply(lambda x: weekdays[int(x)] if 0 <= int(x) <= 6 else 'Unknown')
+        else:
+           df['weekday'] = 'Monday'
     df['weekday'] = pd.Categorical(df['weekday'], categories=weekdays)
    
     if 's_price' in df.columns and 'e_price' in df.columns:
         df['avg_price'] = (df['s_price'] + df['e_price']) / 2
     
     df = pd.get_dummies(df, columns=['weekday'], drop_first=False)
-    # Drop e_price, s_price, time if present
+
     df = df.drop(columns=[col for col in ['e_price', 's_price', 'time'] if col in df.columns], errors='ignore')
 
     for col in feature_order:
@@ -64,7 +64,7 @@ if mode == "Single Input":
             's_price': [s_price],
             'e_price': [e_price]
         })
-
+        input_df['avg_price'] = (input_df['s_price'] + input_df['e_price']) / 2
         processed = preprocess(input_df)
         processed = processed.reindex(columns = feature_order,fill_value=0)
         prediction = model.predict(processed)
@@ -78,6 +78,9 @@ elif mode == "Batch Upload":
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file)
         st.write("✅ Uploaded Data Preview:", df.head())
+
+        if 's_price' in df.columns and 'e_price' in df.columns:
+           df['avg_price'] = (df['s_price'] + df['e_price']) / 2
 
         processed = preprocess(df)
         processed = processed.reindex(columns = feature_order,fill_value=0)
