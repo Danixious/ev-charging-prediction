@@ -4,7 +4,7 @@ import numpy
 import streamlit as st
 import altair as alt
 
-model,feature_order = joblib.load("D:/EV_prediction/ev-charging-prediction/models/RandomForsetRegressorModel.joblib")
+model,feature_order = joblib.load("models/RandomForsetRegressorModel.joblib")
 st.set_page_config(page_title = "Predict the charging volume based on station conditions and time",layout = "centered")
 st.title("⚡EV Charging Demand Prediction")
 
