@@ -13,7 +13,12 @@ st.title("⚡EV Charging Demand Prediction")
 mode = st.sidebar.radio("Select Prediction Mode",["Single Input","Batch Upload"])
 
 def preprocess(df):
-    weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    if 'weekday' not in df.columns and 'day_of_week' in df.columns:
+        weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        df['weekday'] = df['day_of_week'].apply(lambda x: weekdays[int(x)] if 0 <= int(x) <= 6 else 'Unknown')
+    else:
+        weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        
     df['weekday'] = pd.Categorical(df['weekday'], categories=weekdays)
    
     if 's_price' in df.columns and 'e_price' in df.columns:
