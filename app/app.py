@@ -5,6 +5,7 @@ import streamlit as st
 import altair as alt
 
 model,feature_order = joblib.load("models/RandomForsetRegressorModel.joblib")
+df = df[['day_of_week', 'hour_of_day', 'price_per_kWh']]
 st.set_page_config(page_title = "Predict the charging volume based on station conditions and time",layout = "centered")
 st.title("⚡EV Charging Demand Prediction")
 
