@@ -19,10 +19,13 @@ Tech Stack: Python, Pandas, Scikit-learn, Matplotlib, XGBoost, Streamlit
 
 📌 Visual Insights
 🔹 Average Charging Volume by Weekday
+
 <img src="https://github.com/Danixious/ev-charging-prediction/blob/main/outputs/AVGChargingVolumebyweekday.png" width="600"/>
 🔹 Average Charging Volume by Hour
+
 <img src="https://github.com/Danixious/ev-charging-prediction/blob/main/outputs/AVGChargingVolumebyhourofday.png" width="600"/>
 🔹 Price vs Volume Distribution
+
 <img src="https://github.com/Danixious/ev-charging-prediction/blob/main/outputs/PriceVSVolume.png" width="600"/>
 
 
@@ -35,7 +38,10 @@ Tech Stack: Python, Pandas, Scikit-learn, Matplotlib, XGBoost, Streamlit
 
 
 ✅ Best Model Chosen: Random Forest Regressor due to its highest accuracy and robust CV score.
+
+
 🖥️ App Preview
+
 <img src="https://github.com/Danixious/ev-charging-prediction/blob/main/outputs/AppPreview.png" width="700"/>
 
 🧪 How to Run
@@ -53,9 +59,7 @@ streamlit run app.py
 
 
 📁 Project Structure
-graphql
-Copy
-Edit
+
 ├── app.py                   # Streamlit UI
 ├── model/                   # Trained model (Random Forest)
 ├── notebooks/               # EDA and model training
@@ -63,14 +67,15 @@ Edit
 ├── outputs/                 # Visualizations
 ├── README.md
 └── requirements.txt
+
 ✨ Future Improvements
-Integrate weather & traffic data
+- Integrate weather & traffic data
 
-Deploy on cloud (AWS/GCP)
+- Deploy on cloud (AWS/GCP)
 
-Add time-series models (Prophet, LSTM)
+- Add time-series models (Prophet, LSTM)
 
-Feedback mechanism for live model retraining
+- Feedback mechanism for live model retraining
 
 🙋‍♂️ Author
 Daniel Julius Natal
