@@ -8,6 +8,10 @@
 - 👉 [EV Charging Demand Prediction Web App](https://ev-charging-prediction-ksm5ddtn7b2kl9wy3aehw3.streamlit.app/)
 
 ---
+
+- 📄 [Data Used in Training ](https://github.com/Danixious/ev-charging-prediction/blob/main/data/Cleaned_data.zip)
+
+
 ## 📊 Project Overview
 -  🎯 **Goal:** Forecast charging volume (in kWh) based on temporal and contextual features.
 
