@@ -84,12 +84,18 @@ streamlit run app.py
 
 ## 📁 Project Structure
 
-├── app.py                   # Streamlit UI
-├── model/                   # Trained model (Random Forest)
-├── notebooks/               # EDA and model training
-├── data/                    # Cleaned dataset
-├── outputs/                 # Visualizations
+├── app.py        # Streamlit UI
+                             
+├── model/        # Trained model (Random Forest)
+                            
+├── notebooks/    # EDA and model training
+                             
+├── data/         # Cleaned dataset
+                  
+├── outputs/      # Visualizations
+                               
 ├── README.md
+
 └── requirements.txt
 
 ## ✨ Future Improvements
