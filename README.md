@@ -104,5 +104,6 @@ streamlit run app.py
 ## 🙋‍♂️ Author
 Daniel Julius Natal
 Computer Science Engineering student
+
 📧 Email(mailto:danieljuliusnatal@gmail.com) | 💼 LinkedIn(www.linkedin.com/in/daniel-julius-natal-68060228a)
 
