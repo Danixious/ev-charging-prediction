@@ -38,13 +38,12 @@ def preprocess(df):
 if mode == "Single Input":
     st.subheader("🔍Predict for a Single Time Slot")
 
-    busy = st.number_input("Busy Chargers",min_value = 0.0)
-    idle = st.number_input("Idle Chargers", min_value=0.0)
+    busy = st.number_input("Busy Chargers",min_value = 0.0,step = 1.0)
+    idle = st.number_input("Idle Chargers", min_value=0.0,step = 1.0)
     fast_busy = st.number_input("Fast Chargers Busy", min_value=0.0)
     slow_busy = st.number_input("Slow Chargers Busy", min_value=0.0)
     duration = st.number_input("Charging Duration (hours)", min_value=0.0)
     weekday = st.selectbox("Weekday", ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
-    is_weekend = st.selectbox("Is Weekend", [0, 1])
     hour = st.slider("Hour of Day", 0, 23)
     month = st.slider("Month", 1, 12)
     s_price = st.number_input("Starting Price", min_value=0.0)
@@ -57,7 +56,6 @@ if mode == "Single Input":
             'fast_busy': [fast_busy],
             'slow_busy': [slow_busy],
             'duration': [duration],
-            'is_weekend': [is_weekend],
             'hour': [hour],
             'month': [month],
             'weekday': [weekday],
@@ -68,8 +66,13 @@ if mode == "Single Input":
         processed = preprocess(input_df)
         processed = processed.reindex(columns = feature_order,fill_value=0)
         prediction = model.predict(processed)
-        st.success(f"🔋 Predicted Charging Volume: {prediction[0]:.2f} kWh")
-
+        st.success(f"🔋 Estimated Energy Demand: {prediction[0]:.2f} kWh")
+        st.markdown(
+           f"""<div style='padding: 10px; background-color: #f1f3f4; border-radius: 6px;'>
+           <strong>🔍 Interpretation:</strong> Based on the current station status and time conditions, the estimated energy demand for EV charging is approximately <strong>{prediction[0]:.2f} kilowatt-hours (kWh)</strong> during this timeslot. This value can help anticipate electricity load and manage station capacity.
+           </div>""",
+           unsafe_allow_html=True
+    )
 elif mode == "Batch Upload":
     st.subheader("📂 Predict from CSV Upload")
 
@@ -88,6 +91,12 @@ elif mode == "Batch Upload":
 
         df['Predicted Volume'] = predictions
         st.write("🔋 Predictions", df.head())
+        st.markdown(
+           f"""<div style='padding: 10px; background-color: #f1f3f4; border-radius: 6px;'>
+           <strong>📊 Interpretation:</strong> The uploaded dataset has been successfully processed. Each row now includes a <strong>Predicted Charging Volume</strong> (in kWh), which estimates the expected energy demand based on station status, time, and pricing data.
+           </div>""",
+    unsafe_allow_html=True
+)
 
         if 'hour' in df.columns:
             chart = alt.Chart(df).mark_line(point=True).encode(
