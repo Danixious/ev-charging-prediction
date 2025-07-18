@@ -73,7 +73,7 @@ if mode == "Single Input":
             <span style='font-size:18px'>📘 <strong>Input Summary:</strong></span>
             <br>
             <span style='color:#DDDDDD;'>
-            ⚡ <strong>Fast Charging Enabled:</strong> {"Yes" if fast_busy == 1 else "No"}<br>
+            ⚡ <strong>Fast Charging Enabled:</strong> {"Yes" if fast_busy > 0 else "No"}<br>
             🕓 <strong>Hour of Day:</strong> {hour}:00<br>
             💰 <strong>Average Price:</strong> ₹{avg_price:.2f}/kWh<br>
             ⛽ <strong>Busy Slots:</strong> {busy}<br>
@@ -101,15 +101,15 @@ elif mode == "Batch Upload":
 
         df['Predicted Volume'] = predictions
         st.write("🔋 Predictions", df.head())
-        if 'Predicted_Charging_Volume' in df.columns:
-            num_fast = df['fast_charging'].sum()
+        if 'Predicted_Volume' in df.columns:
+            num_fast = df['fast_busy'].sum()
             avg_price = df['avg_price'].mean()
             hours = df['hour'].nunique()
             min_hour = df['hour'].min()
             max_hour = df['hour'].max()
             total_rows = len(df)
 
-            peak_hour = df.groupby('hour')['Predicted_Charging_Volume'].mean().idxmax()
+            peak_hour = df.groupby('hour')['Predicted_Volume'].mean().idxmax()
 
             st.markdown(
                 f"""
