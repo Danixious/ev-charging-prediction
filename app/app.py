@@ -95,7 +95,7 @@ elif mode == "Batch Upload":
            f"""<div style='padding: 10px; background-color: #f1f3f4; border-radius: 6px;'>
            <strong>📊 Interpretation:</strong> The uploaded dataset has been successfully processed. Each row now includes a <strong>Predicted Charging Volume</strong> (in kWh), which estimates the expected energy demand based on station status, time, and pricing data.
            </div>""",
-        unsafe_allow_html=True
+           unsafe_allow_html=True
 )
 
         if 'hour' in df.columns:
