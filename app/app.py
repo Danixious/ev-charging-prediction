@@ -66,13 +66,23 @@ if mode == "Single Input":
         processed = preprocess(input_df)
         processed = processed.reindex(columns = feature_order,fill_value=0)
         prediction = model.predict(processed)
+        avg_price = input_df['avg_price'].iloc[0]
         st.success(f"🔋 Estimated Energy Demand: {prediction[0]:.2f} kWh")
-        st.markdown(
-           f"""<div style='padding: 10px; background-color: #f1f3f4; border-radius: 6px;'>
-           <strong>🔍 Interpretation:</strong> Based on the current station status and time conditions, the estimated energy demand for EV charging is approximately <strong>{prediction[0]:.2f} kilowatt-hours (kWh)</strong> during this timeslot. This value can help anticipate electricity load and manage station capacity.
-           </div>""",
-           unsafe_allow_html=True
-    )
+        summary_html = f"""
+        <div style='background-color:#262730; padding: 15px; border-radius: 10px; margin-top: 20px;'>
+            <span style='font-size:18px'>📘 <strong>Input Summary:</strong></span>
+            <br>
+            <span style='color:#DDDDDD;'>
+            ⚡ <strong>Fast Charging Enabled:</strong> {"Yes" if fast_busy == 1 else "No"}<br>
+            🕓 <strong>Hour of Day:</strong> {hour}:00<br>
+            💰 <strong>Average Price:</strong> ₹{avg_price:.2f}/kWh<br>
+            ⛽ <strong>Busy Slots:</strong> {busy}<br>
+            🚗 <strong>Idle Slots:</strong> {idle}
+            </span>
+        </div>
+        """
+        st.markdown(summary_html, unsafe_allow_html=True)
+
 elif mode == "Batch Upload":
     st.subheader("📂 Predict from CSV Upload")
 
@@ -91,17 +101,33 @@ elif mode == "Batch Upload":
 
         df['Predicted Volume'] = predictions
         st.write("🔋 Predictions", df.head())
-        st.markdown(
-            """
-            <div style='background-color:#262730; padding: 15px; border-radius: 10px; margin-top: 20px;'>
-                <span style='font-size:18px'>📊 <strong>Interpretation:</strong></span>
-                <br>
-                <span style='color:#DDDDDD;'>The uploaded dataset has been successfully processed. Each row now includes a 
-                <strong>Predicted Charging Volume</strong> (in kWh), which estimates the expected energy demand based on station status, time, and pricing data.</span>
-            </div>
-            """,
-            unsafe_allow_html=True
-)
+        if 'Predicted_Charging_Volume' in df.columns:
+            num_fast = df['fast_charging'].sum()
+            avg_price = df['avg_price'].mean()
+            hours = df['hour'].nunique()
+            min_hour = df['hour'].min()
+            max_hour = df['hour'].max()
+            total_rows = len(df)
+
+            peak_hour = df.groupby('hour')['Predicted_Charging_Volume'].mean().idxmax()
+
+            st.markdown(
+                f"""
+                <div style='background-color:#262730; padding: 15px; border-radius: 10px; margin-top: 20px;'>
+                    <span style='font-size:18px'>📊 <strong>Batch Upload Summary:</strong></span>
+                    <br>
+                    <span style='color:#DDDDDD;'>
+                    ✅ <strong>Total Records:</strong> {total_rows}<br>
+                    ⚡ <strong>Fast Chargers:</strong> {num_fast}<br>
+                    🕓 <strong>Time Range:</strong> {min_hour}:00 - {max_hour}:00 ({hours} unique hour(s))<br>
+                    💰 <strong>Average Price:</strong> ₹{avg_price:.2f}/kWh<br>
+                    🌟 <strong>Predicted Peak Demand Hour:</strong> {peak_hour}:00
+                    </span>
+                </div>
+                """,
+                unsafe_allow_html=True
+    )
+
 
         if 'hour' in df.columns:
             chart = alt.Chart(df).mark_line(point=True).encode(
