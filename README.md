@@ -71,18 +71,18 @@
 
 ## 🧪 How to Run
 
-# Clone the repo:
+-  Clone the repo:
 git clone https://github.com/Danixious/ev-charging-prediction.git
 cd ev-charging-prediction
 
-# Install dependencies:
+-  Install dependencies:
 pip install -r requirements.txt
 
-# Run Streamlit App:
+- Run Streamlit App:
 streamlit run app.py
 
 
-📁 Project Structure
+## 📁 Project Structure
 
 ├── app.py                   # Streamlit UI
 ├── model/                   # Trained model (Random Forest)
@@ -92,7 +92,7 @@ streamlit run app.py
 ├── README.md
 └── requirements.txt
 
-✨ Future Improvements
+## ✨ Future Improvements
 - Integrate weather & traffic data
 
 - Deploy on cloud (AWS/GCP)
@@ -101,8 +101,8 @@ streamlit run app.py
 
 - Feedback mechanism for live model retraining
 
-🙋‍♂️ Author
+## 🙋‍♂️ Author
 Daniel Julius Natal
-Computer Science Engineering student with a focus on Data Science and Machine Learning.
+Computer Science Engineering student
 📧 Email(mailto:danieljuliusnatal@gmail.com) | 💼 LinkedIn(www.linkedin.com/in/daniel-julius-natal-68060228a)
 
