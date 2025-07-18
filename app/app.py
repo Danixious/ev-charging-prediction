@@ -92,10 +92,15 @@ elif mode == "Batch Upload":
         df['Predicted Volume'] = predictions
         st.write("🔋 Predictions", df.head())
         st.markdown(
-           f"""<div style='padding: 10px; background-color: #f1f3f4; border-radius: 6px;'>
-           <strong>📊 Interpretation:</strong> The uploaded dataset has been successfully processed. Each row now includes a <strong>Predicted Charging Volume</strong> (in kWh), which estimates the expected energy demand based on station status, time, and pricing data.
-           </div>""",
-           unsafe_allow_html=True
+            """
+            <div style='background-color:#262730; padding: 15px; border-radius: 10px; margin-top: 20px;'>
+                <span style='font-size:18px'>📊 <strong>Interpretation:</strong></span>
+                <br>
+                <span style='color:#DDDDDD;'>The uploaded dataset has been successfully processed. Each row now includes a 
+                <strong>Predicted Charging Volume</strong> (in kWh), which estimates the expected energy demand based on station status, time, and pricing data.</span>
+            </div>
+            """,
+            unsafe_allow_html=True
 )
 
         if 'hour' in df.columns:
