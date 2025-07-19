@@ -37,17 +37,18 @@
 
 ---
 
-## 📌 Visual Insights
+## 📥 Input Variables Explained
 
-🔹 Average Charging Volume by Weekday
-
-<img src="https://github.com/Danixious/ev-charging-prediction/blob/main/outputs/AVGChargingVolumebyweekday.png" width="600"/>
-🔹 Average Charging Volume by Hour
-
-<img src="https://github.com/Danixious/ev-charging-prediction/blob/main/outputs/AVGChargingVolumebyhourofday.png" width="600"/>
-🔹 Price vs Volume Distribution
-
-<img src="https://github.com/Danixious/ev-charging-prediction/blob/main/outputs/PriceVSVolume.png" width="600"/>
+| Feature            | Description                                                                 |
+|--------------------|-----------------------------------------------------------------------------|
+| `hour`             | Hour of the day (0–23)                                                      |
+| `s_price`          | Starting price for EV charging (₹/kWh)                                      |
+| `e_price`          | Ending price for EV charging (₹/kWh)                                        |
+| `avg_price`        | Average of `s_price` and `e_price` (automatically calculated by the app)    |
+| `slow_busy`        | Number of busy slow chargers at the station                                 |
+| `slow_idle`        | Number of idle slow chargers at the station                                 |
+| `fast_busy`        | Number of busy fast chargers at the station                                 |
+| `fast_idle`        | Number of idle fast chargers at the station                                 |
 
 ---
 
