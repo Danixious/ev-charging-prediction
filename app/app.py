@@ -85,31 +85,33 @@ if mode == "Single Input":
 
 elif mode == "Batch Upload":
     st.subheader("📂 Predict from CSV Upload")
-
     uploaded_file = st.file_uploader("Upload a CSV file with data", type=['csv'])
 
     if uploaded_file is not None:
         df = pd.read_csv(uploaded_file)
         st.write("✅ Uploaded Data Preview:", df.head())
 
+        # Add avg_price if necessary
         if 's_price' in df.columns and 'e_price' in df.columns:
-           df['avg_price'] = (df['s_price'] + df['e_price']) / 2
+            df['avg_price'] = (df['s_price'] + df['e_price']) / 2
 
         processed = preprocess(df)
-        processed = processed.reindex(columns = feature_order,fill_value=0)
         predictions = model.predict(processed)
-
         df['Predicted Volume'] = predictions
-        st.write("🔋 Predictions", df.head())
-        if 'Predicted_Volume' in df.columns:
-            num_fast = df['fast_busy'].sum()
-            avg_price = df['avg_price'].mean()
-            hours = df['hour'].nunique()
-            min_hour = df['hour'].min()
-            max_hour = df['hour'].max()
-            total_rows = len(df)
 
-            peak_hour = df.groupby('hour')['Predicted_Volume'].mean().idxmax()
+        st.write("🔋 Predictions", df.head())
+
+        # --- Batch Summary and Visualizations ---
+        if 'Predicted Volume' in df.columns:
+            num_fast = df['fast_busy'].sum() if 'fast_busy' in df.columns else np.nan
+            avg_price = df['avg_price'].mean() if 'avg_price' in df.columns else np.nan
+            hours = df['hour'].nunique() if 'hour' in df.columns else np.nan
+            min_hour = df['hour'].min() if 'hour' in df.columns else np.nan
+            max_hour = df['hour'].max() if 'hour' in df.columns else np.nan
+            total_rows = len(df)
+            peak_hour = None
+            if 'hour' in df.columns:
+                peak_hour = df.groupby('hour')['Predicted Volume'].mean().idxmax()
 
             st.markdown(
                 f"""
@@ -121,12 +123,12 @@ elif mode == "Batch Upload":
                     ⚡ <strong>Fast Chargers:</strong> {num_fast}<br>
                     🕓 <strong>Time Range:</strong> {min_hour}:00 - {max_hour}:00 ({hours} unique hour(s))<br>
                     💰 <strong>Average Price:</strong> ₹{avg_price:.2f}/kWh<br>
-                    🌟 <strong>Predicted Peak Demand Hour:</strong> {peak_hour}:00
+                    🌟 <strong>Predicted Peak Demand Hour:</strong> {peak_hour if peak_hour is not None else '-'}:00
                     </span>
                 </div>
                 """,
                 unsafe_allow_html=True
-    )
+            )
 
 
         if 'hour' in df.columns:
