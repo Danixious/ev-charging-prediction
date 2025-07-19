@@ -1,6 +1,6 @@
 import pandas as pd
 import joblib
-import numpy
+import numpy as np
 import streamlit as st
 import altair as alt
 
@@ -91,7 +91,7 @@ elif mode == "Batch Upload":
         df = pd.read_csv(uploaded_file)
         st.write("✅ Uploaded Data Preview:", df.head())
 
-        # Add avg_price if necessary
+        
         if 's_price' in df.columns and 'e_price' in df.columns:
             df['avg_price'] = (df['s_price'] + df['e_price']) / 2
 
@@ -101,7 +101,7 @@ elif mode == "Batch Upload":
 
         st.write("🔋 Predictions", df.head())
 
-        # --- Batch Summary and Visualizations ---
+       
         if 'Predicted Volume' in df.columns:
             num_fast = df['fast_busy'].sum() if 'fast_busy' in df.columns else np.nan
             avg_price = df['avg_price'].mean() if 'avg_price' in df.columns else np.nan
