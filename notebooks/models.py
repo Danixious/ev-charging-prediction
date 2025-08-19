@@ -9,8 +9,11 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import f1_score
 from sklearn.model_selection import cross_val_score
 from xgboost import XGBRegressor
+import sqlite3
 
-df = pd.read_csv("D:/EV_prediction/ev-charging-prediction/data/Cleaned_data.csv")
+conn = sqlite3.connect("D:/EV_prediction/ev-charging-prediction/notebooks/ev.db")
+df = pd.read_sql("SELECT * FROM ev_data", conn)
+conn.close()
 
 encoder = OneHotEncoder(sparse_output=False)
 one_hot_encoder = encoder.fit_transform(df[['weekday']])

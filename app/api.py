@@ -1,0 +1,42 @@
+import uvicorn
+from fastapi import FastAPI, UploadFile, File, HTTPException
+import pandas as pd
+import joblib
+import io
+
+# Load the model and feature order tuple correctly
+model, feature_order = joblib.load("D:/EV_prediction/ev-charging-prediction/models/RandomForsetRegressorModel.joblib")
+
+app = FastAPI()
+
+def preprocess_input(df: pd.DataFrame) -> pd.DataFrame:
+    # Add missing columns with default 0, reorder columns
+    for col in feature_order:
+        if col not in df.columns:
+            df[col] = 0
+    df = df[feature_order]
+    return df
+
+@app.post("/predict_single/")
+async def predict_single(features: dict):
+    try:
+        df = pd.DataFrame([features])
+        df_processed = preprocess_input(df)
+        prediction = model.predict(df_processed)
+        return {"prediction": prediction.tolist()}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/predict_batch/")
+async def predict_batch(file: UploadFile = File(...)):
+    try:
+        contents = await file.read()
+        df = pd.read_csv(io.StringIO(contents.decode('utf-8')))
+        df_processed = preprocess_input(df)
+        preds = model.predict(df_processed)
+        return {"predictions": preds.tolist()}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+if __name__ == "__main__":
+    uvicorn.run("api:app", host="127.0.0.1", port=8000, reload=True)
