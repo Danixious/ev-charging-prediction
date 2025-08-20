@@ -11,7 +11,7 @@ import threading
 import requests
 import io
 
-model, feature_order = joblib.load("models/RandomForestRegressorModel.joblib")
+model, feature_order = joblib.load("models/RandomForsetRegressorModel.joblib")
 
 st.set_page_config(
     page_title="Predict the charging volume based on station conditions and time",
