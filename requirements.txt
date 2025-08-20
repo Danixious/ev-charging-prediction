@@ -9,5 +9,4 @@ xgboost
 altair
 fastapi
 uvicorn
-sqlite3-binary
 python-multipart
