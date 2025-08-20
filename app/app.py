@@ -11,7 +11,7 @@ import threading
 import requests
 import io
 
-model, feature_order = joblib.load("D:/EV_prediction/ev-charging-prediction/models/RandomForsetRegressorModel.joblib")
+model, feature_order = joblib.load("models/RandomForestRegressorModel.joblib")
 
 st.set_page_config(
     page_title="Predict the charging volume based on station conditions and time",
