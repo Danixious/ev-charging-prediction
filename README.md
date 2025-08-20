@@ -5,7 +5,7 @@
 ---
 
 ## Live Demo
-- 👉 [EV Charging Demand Prediction Web App](https://ev-charging-prediction-ksm5ddtn7b2kl9wy3aehw3.streamlit.app/)
+- 👉 [EV Charging Demand Prediction Web App](https://ev-charging-prediction-ca4n5rs8xzdrwwsr8buin8.streamlit.app/)
 
 ---
 
