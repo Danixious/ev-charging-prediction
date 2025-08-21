@@ -3,9 +3,12 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 import pandas as pd
 import joblib
 import io
+import os
 
-# Load the model and feature order tuple correctly
-model, feature_order = joblib.load("D:/EV_prediction/ev-charging-prediction/models/RandomForsetRegressorModel.joblib")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "../models/RandomForsetRegressorModel.joblib")
+
+model, feature_order = joblib.load(MODEL_PATH)
 
 app = FastAPI()
 
