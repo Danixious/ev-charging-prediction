@@ -10,7 +10,9 @@ import uvicorn
 import threading
 import requests
 import io
+import os
 
+API_URL = os.getenv("API_URL", "http://api:8000")
 model, feature_order = joblib.load("models/RandomForsetRegressorModel.joblib")
 
 st.set_page_config(
@@ -73,7 +75,7 @@ if mode == "Single Input":
 
         try:
             response = requests.post(
-                "http://127.0.0.1:8000/predict_single/",
+                f"{API_URL}/predict_single/",
                 json={"features": input_df.iloc[0].to_dict()}
             )
             if response.status_code == 200:
@@ -115,7 +117,7 @@ elif mode == "Batch Upload":
 
         try:
             files = {"file": (uploaded_file.name, uploaded_file.getvalue(), "text/csv")}
-            response = requests.post("http://127.0.0.1:8000/predict_batch/", files=files)
+            response = requests.post(f"{API_URL}/predict_batch/", files=files)
 
             if response.status_code == 200:
                 result = response.json()

@@ -13,7 +13,7 @@ model, feature_order = joblib.load(MODEL_PATH)
 app = FastAPI()
 
 def preprocess_input(df: pd.DataFrame) -> pd.DataFrame:
-    # Add missing columns with default 0, reorder columns
+    
     for col in feature_order:
         if col not in df.columns:
             df[col] = 0
