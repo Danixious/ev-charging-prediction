@@ -13,7 +13,7 @@ import io
 import os
 
 API_URL = os.getenv("API_URL", "http://api:8000")
-model, feature_order = joblib.load("models/RandomForsetRegressorModel.joblib")
+model, feature_order = joblib.load("../models/RandomForsetRegressorModel.joblib")
 
 st.set_page_config(
     page_title="Predict the charging volume based on station conditions and time",
