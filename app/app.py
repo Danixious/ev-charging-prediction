@@ -1,4 +1,4 @@
-# Import required libraries for data handling, ML model loading, UI, and visualization
+# Import required libraries for data handling, ML model loading, UI and charts
 import pandas as pd
 import joblib
 import numpy as np
@@ -6,69 +6,81 @@ import streamlit as st
 import altair as alt
 import os
 
-# Get the absolute path of the current file directory
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Cache the model so it loads only once instead of every Streamlit rerun
+@st.cache_resource
+def load_model():
 
-# Construct the path to the trained model file
-MODEL_PATH = os.path.join(BASE_DIR, "../models/RandomForsetRegressorModel.joblib")
+    # Get absolute path of the current file directory
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Load the trained model and feature order used during training
-model, feature_order = joblib.load(MODEL_PATH)
+    # Build path to the trained model
+    MODEL_PATH = os.path.join(BASE_DIR, "../models/RandomForsetRegressorModel.joblib")
 
-# Configure the Streamlit page settings
+    # Load trained model and feature order used during training
+    model, feature_order = joblib.load(MODEL_PATH)
+
+    # Return model and feature list
+    return model, feature_order
+
+
+# Load cached model
+model, feature_order = load_model()
+
+
+# Configure Streamlit page settings
 st.set_page_config(
-    page_title="Predict EV Charging Demand",
+    page_title="EV Charging Demand Prediction",
     layout="centered"
 )
 
-# Display the title of the application
+# Display application title
 st.title("⚡ EV Charging Demand Prediction")
 
 # Sidebar option to select prediction mode
 mode = st.sidebar.radio("Select Prediction Mode", ["Single Input", "Batch Upload"])
 
 
-# Function to preprocess input data so it matches the model training format
+# Function to preprocess data so it matches model training format
 def preprocess(df):
 
     # Define weekday order used during training
-    weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    weekdays = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
 
     # Ensure weekday column exists
     if 'weekday' not in df.columns:
         df['weekday'] = 'Monday'
 
-    # Convert weekday to categorical with correct order
+    # Convert weekday column to categorical
     df['weekday'] = pd.Categorical(df['weekday'], categories=weekdays)
 
-    # Calculate average price if both price columns exist
+    # Create average price feature if prices exist
     if 's_price' in df.columns and 'e_price' in df.columns:
         df['avg_price'] = (df['s_price'] + df['e_price']) / 2
 
-    # One-hot encode weekday column
+    # One hot encode weekday column
     df = pd.get_dummies(df, columns=['weekday'], drop_first=False)
 
-    # Drop unnecessary columns that were removed during training
-    df = df.drop(columns=[col for col in ['e_price', 's_price', 'time'] if col in df.columns], errors='ignore')
+    # Remove columns not used during training
+    df = df.drop(columns=[col for col in ['e_price','s_price','time'] if col in df.columns], errors='ignore')
 
-    # Ensure all model features exist in the input
+    # Ensure all required model features exist
     for col in feature_order:
         if col not in df.columns:
             df[col] = 0
 
-    # Reorder columns to match training feature order
+    # Reorder dataframe columns to match training order
     df = df[feature_order]
 
     return df
 
 
-# ---------------- SINGLE INPUT PREDICTION ----------------
+# ---------------- SINGLE INPUT ----------------
 if mode == "Single Input":
 
     # Section title
     st.subheader("🔍 Predict for a Single Time Slot")
 
-    # User inputs for model features
+    # Input fields for model features
     busy = st.number_input("Busy Chargers", min_value=0.0, step=1.0)
     idle = st.number_input("Idle Chargers", min_value=0.0, step=1.0)
     fast_busy = st.number_input("Fast Chargers Busy", min_value=0.0)
@@ -83,33 +95,33 @@ if mode == "Single Input":
     # Run prediction when button is clicked
     if st.button("Predict"):
 
-        # Create dataframe from user input
+        # Convert user input to dataframe
         input_df = pd.DataFrame({
-            'busy': [busy],
-            'idle': [idle],
-            'fast_busy': [fast_busy],
-            'slow_busy': [slow_busy],
-            'duration': [duration],
-            'hour': [hour],
-            'month': [month],
-            'weekday': [weekday],
-            's_price': [s_price],
-            'e_price': [e_price]
+            'busy':[busy],
+            'idle':[idle],
+            'fast_busy':[fast_busy],
+            'slow_busy':[slow_busy],
+            'duration':[duration],
+            'hour':[hour],
+            'month':[month],
+            'weekday':[weekday],
+            's_price':[s_price],
+            'e_price':[e_price]
         })
 
-        # Preprocess input to match training format
+        # Preprocess input data
         processed_df = preprocess(input_df)
 
-        # Generate prediction using trained model
+        # Generate prediction
         prediction = model.predict(processed_df)
 
         # Calculate average price for display
         avg_price = (s_price + e_price) / 2
 
-        # Display prediction result
+        # Show prediction result
         st.success(f"🔋 Estimated Energy Demand: {prediction[0]:.2f} kWh")
 
-        # Show a styled summary of inputs
+        # Display input summary
         st.markdown(f"""
         <div style='background-color:#262730; padding:15px; border-radius:10px; margin-top:20px;'>
         📘 <strong>Input Summary</strong><br><br>
@@ -122,7 +134,7 @@ if mode == "Single Input":
         """, unsafe_allow_html=True)
 
 
-# ---------------- BATCH CSV PREDICTION ----------------
+# ---------------- BATCH UPLOAD ----------------
 elif mode == "Batch Upload":
 
     # Section title
@@ -139,19 +151,17 @@ elif mode == "Batch Upload":
         # Show preview of uploaded data
         st.write("Uploaded Data Preview:", df.head())
 
-        # Preprocess input data
+        # Preprocess dataset
         processed_df = preprocess(df)
 
         # Generate predictions
         predictions = model.predict(processed_df)
 
-        # Add predictions to dataframe
+        # Add predictions column
         df["Predicted Volume"] = predictions
 
         # Display predictions
         st.write("🔋 Predictions", predictions)
-
-        # ---------------- VISUALIZATION ----------------
 
         # Plot predicted demand by hour
         if 'hour' in df.columns:
@@ -163,7 +173,7 @@ elif mode == "Batch Upload":
 
             st.altair_chart(chart, use_container_width=True)
 
-        # Plot average predicted demand per weekday
+        # Plot average predicted demand by weekday
         if 'weekday' in df.columns:
 
             weekday_order = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
@@ -179,7 +189,7 @@ elif mode == "Batch Upload":
 
             st.altair_chart(chart, use_container_width=True)
 
-        # Create histogram distribution of predicted volume
+        # Create histogram of predicted volume
         hist_data = df['Predicted Volume'].round(1).value_counts().reset_index()
         hist_data.columns = ['Volume','Count']
 
@@ -191,7 +201,7 @@ elif mode == "Batch Upload":
 
         st.altair_chart(chart, use_container_width=True)
 
-        # Allow user to download predictions
+        # Allow downloading predictions as CSV
         csv = df.to_csv(index=False).encode('utf-8')
 
         st.download_button(
